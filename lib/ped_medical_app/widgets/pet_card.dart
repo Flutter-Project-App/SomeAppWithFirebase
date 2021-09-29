@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:some_app_firebase/ped_medical_app/model/pet_model.dart';
+import 'package:some_app_firebase/ped_medical_app/page/pet_room_page.dart';
 import 'package:some_app_firebase/ped_medical_app/utils/pets_icons.dart';
 
 class PetCard extends StatelessWidget {
@@ -31,7 +32,7 @@ class PetCard extends StatelessWidget {
             _getPetIcon(pet.type)
           ],
         ),
-        onTap: () {},
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PetRoomPage(pet: pet))),
         splashColor: splashColor[pet.type],
       ),
     );
