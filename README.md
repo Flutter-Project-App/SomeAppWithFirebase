@@ -1,6 +1,6 @@
 # some_app_firebase
 
-A new Flutter project.
+Some Flutter projects use Firebase.
 
 ## Getting Started
 
