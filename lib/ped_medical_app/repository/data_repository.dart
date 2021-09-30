@@ -6,7 +6,8 @@ class DataRepository {
       FirebaseFirestore.instance.collection('pets');
 
   Stream<QuerySnapshot> getStream() {
-    return collection.snapshots();
+    return collection.orderBy('timestamp').snapshots();
+    // return collection.snapshots();
   }
 
   Future<DocumentReference> addPet(PetModel pet) {

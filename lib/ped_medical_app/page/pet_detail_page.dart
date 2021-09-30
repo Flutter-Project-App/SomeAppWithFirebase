@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:some_app_firebase/ped_medical_app/model/category_option_model.dart';
 import 'package:some_app_firebase/ped_medical_app/model/pet_model.dart';
 import 'package:some_app_firebase/ped_medical_app/model/vaccination_model.dart';
+import 'package:some_app_firebase/ped_medical_app/page/add_vaccination_page.dart';
+import 'package:some_app_firebase/ped_medical_app/repository/data_repository.dart';
 import 'package:some_app_firebase/ped_medical_app/widgets/choose_chips.dart';
 import 'package:some_app_firebase/ped_medical_app/widgets/user_text_field.dart';
 import 'package:some_app_firebase/ped_medical_app/widgets/vaccination_list.dart';
@@ -16,6 +18,7 @@ class PetDetail extends StatefulWidget {
 }
 
 class _PetDetailState extends State<PetDetail> {
+  final DataRepository dataRepository = DataRepository();
   final _formKey = GlobalKey<FormState>();
   final dateFormat = DateFormat('dd-MM-yyyy');
   late List<CategoryOption> animalTypes;
@@ -82,15 +85,56 @@ class _PetDetailState extends State<PetDetail> {
                   onChanged: (value) => notes = value,
                   validator: (value) {}),
               VaccinationList(pet: widget.pet, buildRow: buildRow),
-              FloatingActionButton(onPressed: () {
-
-              }),
               SizedBox(
                 height: 20,
               ),
+              FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AddVaccinationPage(
+                            pet: widget.pet,
+                            callback: () {
+                              setState(() {});
+                            });
+                      });
+                },
+                tooltip: 'Add Vaccination',
+                child: Icon(Icons.add),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [],
+                children: [
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      dataRepository.deletePet(widget.pet);
+                    },
+                    color: Colors.blueGrey.shade600,
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+                  MaterialButton(
+                    onPressed: () async {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        Navigator.of(context).pop();
+                        widget.pet.name = name;
+                        widget.pet.notes = notes ?? widget.pet.notes;
+                        widget.pet.type = type;
+
+                        dataRepository.updatePet(widget.pet);
+                      }
+                    },
+                    color: Colors.blueGrey.shade600,
+                    child: Text(
+                      'Update',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  )
+                ],
               )
             ],
           ),

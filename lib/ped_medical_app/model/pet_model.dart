@@ -7,16 +7,19 @@ class PetModel {
   String type;
   List<VaccinationModel> vaccinations;
   String? referenceId;
+  String? timestamp;
 
   PetModel(this.name,
       {this.notes,
       required this.type,
       required this.vaccinations,
-      this.referenceId});
+      this.referenceId,
+      this.timestamp});
 
   factory PetModel.fromSnapshot(DocumentSnapshot snapshot) {
     final newPet = PetModel.fromJson(snapshot.data() as Map<String, dynamic>);
     newPet.referenceId = snapshot.reference.id;
+    // newPet.timestamp = FieldValue.serverTimestamp();
     return newPet;
   }
 
@@ -52,6 +55,7 @@ Map<String, dynamic> _petModelToJson(PetModel instance) => <String, dynamic>{
       'notes': instance.notes,
       'type': instance.type,
       'vaccinations': _vaccinationList(instance.vaccinations),
+  'timestamp': FieldValue.serverTimestamp()
     };
 
 List<Map<String, dynamic>>? _vaccinationList(

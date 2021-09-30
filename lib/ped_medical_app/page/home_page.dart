@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final DataRepository repository = DataRepository();
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   final boldStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
   @override
@@ -33,7 +34,10 @@ class _HomePageState extends State<HomePage> {
         stream: repository.getStream(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
-          return _buildList(context, snapshot.data?.docs ?? []);
+          return RefreshIndicator(
+              key: refreshKey,
+              onRefresh: _pullRefresh,
+          child: _buildList(context, snapshot.data?.docs ?? []));
         },
       ),
     );
@@ -56,5 +60,9 @@ class _HomePageState extends State<HomePage> {
       pet: pet,
       boldStyle: boldStyle,
     );
+  }
+
+  Future<void> _pullRefresh() async {
+    await Future.delayed(Duration(seconds: 1));
   }
 }
